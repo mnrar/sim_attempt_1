@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+// unnecessary comment
+
 class Thing{
     private:
     static int id_gen;
