@@ -1,38 +1,42 @@
-#ifndef RECTANGLE_H
-#define RECTANGLE_H
+#include "rect.hpp"
 
 #include <iostream>
-#include "thing.cpp"
+#include "transform.hpp"
 
-class Rectangle : public Thing{
-    private:
-    int x;
-    int y;
-    int width;
-    int height;
+Rectangle::Rectangle(double x, double y, double width, double height):Thing(x, y){
+    std::cout<<"rectangle constructor"<<std::endl;
+    this->width = width;
+    this->height = height;
+}
 
-    public:
-    Rectangle(int x = 100, int y = 100, int width = 50, int height = 50):Thing(x, y){
-        std::cout<<"rectangle constructor"<<std::endl;
-        this->x = x;
-        this->y = y;
-        this->width = width;
-        this->height = height;
+void Rectangle::update(){
+    std::cout<<"update called on this rect: "<<(this->id)<<std::endl;
+    for(auto component : this->components){
+        component->update();
     }
+}
 
-    void display(){
-        print();
-    }
+void Rectangle::display(){
+    Transform* transform = static_cast<Transform*>(this->components[0]);
+    std::cout<<"Rectangle:\n";
+    std::cout<<"ID : "<<(this->id)<<"\n";
+    std::cout<<"X: "<<transform->getX() << ", Y: "<<transform->getY()<<std::endl;
+    std::cout<<"width : "<<(this->width)<<", height: "<<(this->height)<<std::endl;
+}
 
-    void update(){
-        std::cout<<"updtae called on this rect: "<<(this->id)<<std::endl;
-    }
+void Rectangle::displayShort(){
+    std::cout<<"( Rectangle, ID: "<<(this->id)<<")";
+}
 
-    void print(){
-        std::cout<<"Rectangle:\n";
-        std::cout<<"top left corner at: ("<<(this->x)<<", "<<(this->y)<<")\n";
-        std::cout<<"width : "<<(this->width)<<", height: "<<(this->height)<<std::endl;
-    }
-};
+std::string Rectangle::description(){
+    return "Rectangle, ID = " + std::to_string(this->id) + ".\n"
+            + ".\nWidth: " + std::to_string(this->width) + ", Height: " + std::to_string(this->height) + ".\n";
+}
 
-#endif
+std::string Rectangle::descriptionShort(){
+    return "( Rectangle, ID: " + std::to_string(this->id) + ")";
+}
+
+std::string Rectangle::className(){
+    return "Rectangle";
+}

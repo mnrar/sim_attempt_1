@@ -1,27 +1,24 @@
-#ifndef PHYSICSBODY_H
-#define PHYSICSBODY_H
+#include "physicsBody.hpp"
 
 #include <iostream>
-#include "component.cpp"
 
-class PhysicsBody : public Component{
-    private:
-    int acc_due_to_gravity{-10};
-    int mass{1};
-    int force_horizontal{0};
-    int force_vertical{0};
-    bool gravity{0};
+PhysicsBody::PhysicsBody(double mass):Component(){
+    this->mass = mass;
+    std::cout<<"We have a new physics body with mass "<<(this->mass)<<std::endl;
+}
 
-    public:
-    PhysicsBody(Thing* thing, int mass = 1):Component(thing){
-        this->mass = mass;
-        std::cout<<"We have a new physics body with mass "<<(this->mass)<<std::endl;
-    }
+void PhysicsBody::update(){
+    std::cout<<"update called on physics body"<<(this->id)<<std::endl;
+}
 
-    void update(){
-        std::cout<<"update called on physics body"<<(this->id)<<std::endl;
-    }
+std::string PhysicsBody::className(){
+    return "PhysicsBody";
+}
 
-};
+void PhysicsBody::setMass(double mass){
+    this->mass = mass;
+}
 
-#endif
+double PhysicsBody::getMass(){
+    return this->mass;
+}

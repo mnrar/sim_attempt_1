@@ -1,25 +1,37 @@
 #include <iostream>
-#include "rect.cpp"
-#include "physicsBody.cpp"
-#include "scene.cpp"
-
-int Thing::id_gen = 1;
-int Component::id_gen = 1;
+#include <string>
+#include "rect.hpp"
+#include "physicsBody.hpp"
+#include "scene.hpp"
 
 int main(){
- //   Thing::setupThing();
-    Rectangle* rect = new Rectangle(12, 16);
-    rect->print();
+    Rectangle* rect1 = new Rectangle(12, 16);
+    rect1->displayShort();
 
-  //  std::cout<<"Adding physics  to this rect:"<<std::endl;
+    // Rectangle* rect2 = new Rectangle(15, 19, 20, 30);
+    // rect2->displayShort();
 
-    //PhysicsBody rect_pb(rect, 3); 
+    // PhysicsBody* pb_for_2 = new PhysicsBody(5);
+    // rect2->addComponent(pb_for_2);
+
     std::cout<<"Making a scene: "<<std::endl;
 
+    rect1->setSpeedX(1);
+    rect1->setSpeedY(2);
+
+    rect1->addComponent(new PhysicsBody(5));
+    rect1->addComponent(new RectangleCollider(static_cast<Transform*>(rect1->getTransform())));
+
+    Rectangle* rect2 = new Rectangle(63, 25);
+    rect2->addComponent(new PhysicsBody(5));
+    rect2->addComponent(new RectangleCollider(static_cast<Transform*>(rect2->getTransform())));
+
     Scene scene(53);
-    scene.addThing(new Rectangle(15, 19, 20, 30));
-    scene.addComponent(new PhysicsBody(rect, 5));
-    scene.display();
-    scene.update();
-    scene.display();
+    scene.addThing(rect1);
+    scene.addThing(rect2);
+    do{
+        scene.update();
+        scene.display();
+        std::cout<<"---------------------------";
+    }while(std::cin.get() == '\n');
 }

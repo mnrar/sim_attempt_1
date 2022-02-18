@@ -1,51 +1,105 @@
-#ifndef THING_H
-#define THING_H 
+#include "thing.hpp"
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include "component.hpp"
+#include "transform.hpp"
+#include "rect_collider.hpp"
 
-// unnecessary comment
+int Thing::id_gen = 1;  
 
-class Thing{
-    private:
-    static int id_gen;
+Thing::Thing(){
+    this->giveId();
+    this->components.push_back(new Transform());
+}
 
-    protected:
-    int id;
+Thing::Thing(double x, double y){
+    this->giveId();
+    this->components.push_back(new Transform(x, y));
+}
 
+void Thing::giveId(){
+    this->id = id_gen;
+    Thing::id_gen++;
+}
 
-    public:
-    Thing(){
-        std::cout<<"making a thing with id "<<id_gen<<std::endl;
-        this->id = id_gen;
-        Thing::id_gen++;
+void Thing::display(){
+    std::cout<<"Thing:\n ID : "<<(this->id)<<std::endl;
+}
+
+void Thing::displayShort(){
+    std::cout<<"(Thing, id: "<<(this->id)<<")";
+}
+
+void Thing::update(){
+    std::cout<<"Update called on thing: "<<(this->id)<<std::endl;
+    for(auto component : components){
+        component->update();
+    }
+}
+
+std::string Thing::description(){
+    return "A thing with id : " + std::to_string(this->id) + ")\n";
+}
+
+std::string Thing::descriptionShort(){
+    return "(Thing, ID : " + std::to_string(this->id) + ")";
+}
+
+void Thing::addComponent(Component* component){
+    this->components.push_back(component);
+
+    if(component->className() == "PhysicsBody" && this->hasCollider()){
+        static_cast<RectangleCollider*>(this->getCollider())->setPhysicsBody(static_cast<PhysicsBody*>(component));
     }
 
-    Thing(int x, int y): Thing(){
-        std::cout<<"Making a thing at "<<x<<", "<<y<<std::endl;
+    if(component->className() == "RectangleCollider" && this->hasPhysics()){
+        static_cast<RectangleCollider*>(component)->setPhysicsBody(static_cast<PhysicsBody*>(this->getPhysicsBody()));
     }
+}
 
- //   static void setupThing(){
- //       Thing::id_gen = 1;
-  //  }
-
-    virtual void display(){
-        std::cout<<"Heres a thing with id: "<<(this->id)<<'\n';
+bool Thing::hasPhysics(){
+    for(auto component : components){
+        if(component->className() == "PhysicsBody")return true;
     }
+    return false;
+}
 
-    virtual void update(){
-        std::cout<<"Update called on thing: "<<(this->id)<<std::endl;
+bool Thing::hasCollider(){
+    for(auto component : components){
+        if(component->className() == "RectangleCollider")return true;
     }
+    return false;
+}
 
-    void printShort(){
-        std::cout<<"(Thing, ID: "<<this->id<<")";
+Component* Thing::getCollider(){
+    for(auto component : components){
+        if(component->className() == "RectangleCollider")return component;
     }
+    return NULL;
+}
 
-    std::string idDesc(){
-        return "(Thing, ID : " + std::to_string(this->id) + ")";
+Component* Thing::getPhysicsBody(){
+    for(auto component : components){
+        if(component->className() == "PhysicsBody")return component;
     }
+    return NULL;      
+}
 
+Component* Thing::getTransform(){
+    for(auto component : components){
+        if(component->className() == "Transform")return component;
+    }
+    return NULL;      
+}
 
-};
+void Thing::setSpeedX(double xs){
+    Transform* transform = static_cast<Transform*>(components[0]);
+    transform->setSpeedX(xs);
+}
 
-#endif
+void Thing::setSpeedY(double ys){
+    Transform* transform = static_cast<Transform*>(components[0]);
+    transform->setSpeedY(ys);
+}

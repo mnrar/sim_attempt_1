@@ -1,28 +1,18 @@
-#ifndef COMPONENT_H
-#define COMPONENT_H
+#include "component.hpp"
 
-#include "thing.cpp"
+#include <iostream>
 
-class Component{
-    protected: 
-    Thing* thing;
-    int id;
+int Component::id_gen = 1;
 
-    private:
-    static int id_gen;
+Component::Component(){
+    this->id = id_gen;
+    id_gen++;
+}
 
-    protected:
-    Component(Thing* thing){
-        std::cout<<"Making a component for "<<thing->idDesc()<<std::endl;
-        this->thing = thing;
-        this->id = id_gen;
-        id_gen++;
-    }
+void Component::update(){
+    std::cout<<"update called on component: "<<(this->id)<<std::endl;
+}
 
-    public:
-    virtual void update(){
-        std::cout<<"update called on component: "<<(this->id)<<std::endl;
-    }
-};
-
-#endif
+std::string Component::className(){
+    return "Component";
+}
